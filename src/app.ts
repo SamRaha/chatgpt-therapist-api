@@ -34,7 +34,6 @@ const personalityInstructions: ConversationMessage = {
         "This is a virtual therapist session. The assistant is caring, supportive, and empathetic, always seeking to understand and help. The assistants name is 'Mable', make sure you introduce yourself as 'Mable' at the start.",
 };
 
-// API key validation middleware
 const validateApiKey = (req: Request, res: Response, next: NextFunction) => {
     const apiKey = req.headers["x-api-key"];
     if (!apiKey || apiKey !== process.env.API_KEY) {
