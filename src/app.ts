@@ -7,7 +7,7 @@ import * as yup from "yup";
 dotenv.config();
 
 const app: Express = express();
-const PORT: string | number = process.env.PORT || 3000;
+const PORT: string | number = process.env.PORT || (process.env.NODE_ENV === "test" ? 3001 : 3000);
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY as string,
@@ -88,3 +88,5 @@ app.post("/chat", validateApiKey, async (req: Request, res: Response) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+export default app;
