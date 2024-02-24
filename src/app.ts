@@ -28,6 +28,12 @@ const chatSchema = yup.object({
     userMessage: yup.string().trim().required("User message must be a non-empty string"),
 });
 
+const personalityInstructions: ConversationMessage = {
+    role: "system",
+    content:
+        "This is a virtual therapist session. The assistant is caring, supportive, and empathetic, always seeking to understand and help. The assistants name is 'Mable', make sure you introduce yourself as 'Mable' at the start.",
+};
+
 // API key validation middleware
 const validateApiKey = (req: Request, res: Response, next: NextFunction) => {
     const apiKey = req.headers["x-api-key"];
@@ -39,14 +45,13 @@ const validateApiKey = (req: Request, res: Response, next: NextFunction) => {
     next();
 };
 
-// Apply the middleware to the /chat endpoint
 app.post("/chat", validateApiKey, async (req: Request, res: Response) => {
     try {
         const validatedBody = await chatSchema.validate(req.body, { abortEarly: false });
         const { sessionId, userMessage } = validatedBody;
 
         if (!conversations[sessionId]) {
-            conversations[sessionId] = [];
+            conversations[sessionId] = [personalityInstructions];
         }
 
         conversations[sessionId].push({
