@@ -3,7 +3,6 @@ import app from "../src/app";
 const API_KEY = process.env.API_KEY || "91ff0343-001a-4abd-a7cf-ad818430d5c0";
 
 describe("/chat endpoint", () => {
-    // Mock the OpenAI call
     jest.mock("openai", () => ({
         ...jest.requireActual("openai"),
         chat: {
@@ -35,14 +34,12 @@ describe("/chat endpoint", () => {
         expect(response.body.errors).toContain("User message must be a non-empty string");
     });
 
-    // Assuming you have a way to mock `openai.chat.completions.create` to not hit the actual API
     it("should return a reply on valid request", async () => {
         const response = await request(app).post("/chat").set("x-api-key", API_KEY).send({
             sessionId: "test-session",
             userMessage: "Hello",
         });
 
-        // Adjust expectations based on your mocking strategy
         expect(response.status).toBe(200);
         expect(response.body).toHaveProperty("reply");
     });
