@@ -1,37 +1,74 @@
-API Documentation Base URL The base URL for the API is dependent on the environment it's deployed in. For development, it typically is http://localhost:3000.
+Virtual Therapist Server Application
+Overview
+This Virtual Therapist Server Application provides an interface for interacting with a virtual assistant named "Mable", designed to simulate a therapeutic conversation. Utilizing OpenAI's GPT-3.5 model, the application offers empathetic and supportive responses, aiming to understand and help users through conversation. The server is built with Express.js and leverages the OpenAI API for generating responses.
 
-Authentication All API requests require a valid API key provided in the request header:
+Installation
+Before you can run the server, ensure you have Node.js installed on your system. Then, follow these steps to get the server up and running:
 
-Header Name: x-api-key Value: "91ff0343-001a-4abd-a7cf-ad818430d5c0"
+Clone the Repository
 
-1. Create a New Device URL: /devices Method: POST Auth Required: Yes Body: json Copy code { "name": "string", "address": "string", "longitude": "number", "latitude": "number", "device_type": "node | luminaire", "manufacturer": "string", "model": "string", "install_date": "string", "notes": "string", "eui": "string", "serial_number": "string" } Success Response: Code: 201 Created Content: json Copy code { "id": "uuid", "name": "string", "address": "string", ... } Error Response: Code: 400 Bad Request Content: { "errors": [{"index": 0, "error": "Error details"}], "createdDevices": [] }
-2. Read All Devices URL: /devices Method: GET Auth Required: Yes Success Response: Code: 200 OK Content: [{"id": "uuid", "name": "string", ...}, ...]
-3. Read a Single Device by ID URL: /devices/:id
+bash
+Copy code
+git clone <repository-url>
+cd <repository-directory>
+Install Dependencies
 
-Method: GET
+Copy code
+npm install
+Set Up Environment Variables
+Create a .env file in the root directory of your project. Add the following variables:
 
-Auth Required: Yes
+makefile
+Copy code
+PORT=<your_preferred_port>
+OPENAI_API_KEY=<your_openai_api_key>
+API_KEY=<your_api_key_for_authentication>
 
-URL Params: id=[uuid]
+Start the Server:
+npm run dev or npm start
 
+
+Usage
+The server provides a /chat POST endpoint for initiating conversation with the virtual therapist "Mable". It expects an API key for authentication and uses a session-based approach to maintain the context of the conversation.
+
+Making a Request
+To interact with the virtual therapist, send a POST request to /chat with a valid API key and the following JSON payload:
+
+json
+Copy code
+{
+  "sessionId": "unique_session_id",
+  "userMessage": "Your message here"
+}
+sessionId is a unique identifier for your conversation session.
+userMessage is the message you want to send to the virtual therapist.
+Ensure to include your API key in the request headers under x-api-key.
+
+Response
+The server responds with a JSON object containing the reply from the virtual therapist:
+
+json
+Copy code
+{
+  "reply": "Therapist's response here"
+}
+API Endpoint
+POST /chat
+Headers:
+Content-Type: application/json
+x-api-key: <your_api_key>
+Body:
+json
+Copy code
+{
+  "sessionId": "unique_session_id",
+  "userMessage": "Your message here"
+}
 Success Response:
-
-Code: 200 OK Content: {"id": "uuid", "name": "string", ...} Error Response:
-
-Code: 404 Not Found Content: "Device not found" 4. Update a Device URL: /devices/:id Method: PUT Auth Required: Yes URL Params: id=[uuid] Body: json Copy code { "name": "string", ... } Success Response:
-
-Code: 200 OK Content: {"id": "uuid", "name": "string", ...} Error Response:
-
-Code: 400 Bad Request / 404 Not Found Content: "Error message" 5. Delete a Device URL: /devices/:id
-
-Method: DELETE
-
-Auth Required: Yes
-
-URL Params: id=[uuid]
-
-Success Response:
-
-Code: 204 No Content Error Response:
-
-Code: 404 Not Found Content: "Device not found"
+Code: 200 OK
+Content: { "reply": "Therapist's response here" }
+Error Responses:
+Code: 400 Bad Request (Invalid input data)
+Code: 401 Unauthorized (Invalid or missing API key)
+Code: 500 Internal Server Error (Server or API failure)
+Contributing
